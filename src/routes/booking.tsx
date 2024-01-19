@@ -8,7 +8,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,7 +27,8 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
-import { getBookings } from "@/services/apis/dooss/requests/Booking";
+import { createBooking } from "@/services/apis/dooss/requests/Booking";
+import { useNavigate } from "react-router-dom";
 
 const bookingSchema = z.object({
   firstName: z.string(),
@@ -39,27 +39,29 @@ const bookingSchema = z.object({
   date: z.date(),
   time: z.string(),
 });
+
 const Booking = () => {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof bookingSchema>>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      dentist: "",
-      appointmentType: "",
+      firstName: undefined,
+      lastName: undefined,
+      email: undefined,
+      dentist: undefined,
+      appointmentType: undefined,
       date: undefined,
-      time: "",
+      time: undefined,
     },
   });
 
-  const fetchBookings = async () => {
-    const { data } = await getBookings();
-    console.log(data);
+  const submitBooking = async (booking: z.infer<typeof bookingSchema>) => {
+    const { data } = await createBooking(booking);
+    if (data) return navigate("/user");
   };
 
   const onSubmit = (values: z.infer<typeof bookingSchema>) => {
-    fetchBookings();
+    submitBooking(values);
     console.log(values);
   };
   return (
@@ -78,7 +80,6 @@ const Booking = () => {
                 <FormControl>
                   <Input placeholder="First Name" {...field} />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -91,7 +92,6 @@ const Booking = () => {
                 <FormControl>
                   <Input placeholder="Last Name" {...field} />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -104,7 +104,6 @@ const Booking = () => {
                 <FormControl>
                   <Input placeholder="Last Name" {...field} />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -131,7 +130,6 @@ const Booking = () => {
                     </SelectContent>
                   </Select>
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -163,7 +161,6 @@ const Booking = () => {
                     </SelectContent>
                   </Select>
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -193,6 +190,7 @@ const Booking = () => {
                       selected={field.value}
                       onSelect={field.onChange}
                       initialFocus
+                      disabled={(date) => date < new Date()}
                     />
                   </PopoverContent>
                 </Popover>
@@ -228,7 +226,6 @@ const Booking = () => {
                     </SelectContent>
                   </Select>
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
