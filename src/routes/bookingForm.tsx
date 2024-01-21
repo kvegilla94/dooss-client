@@ -61,7 +61,6 @@ const BookingForm = () => {
 
   const onSubmit = (values: z.infer<typeof bookingSchema>) => {
     submitBooking(values);
-    console.log(values);
   };
   return (
     <Form {...form}>
@@ -146,16 +145,18 @@ const BookingForm = () => {
                     <SelectValue placeholder="Services" />
                   </SelectTrigger>
                   <SelectContent position="popper" sideOffset={5}>
-                    <SelectItem value="1">Cleaning</SelectItem>
-                    <SelectItem value="2">Whitening</SelectItem>
-                    <SelectItem value="3">Extractions</SelectItem>
-                    <SelectItem value="4">Veneers</SelectItem>
-                    <SelectItem value="5">Fillings</SelectItem>
-                    <SelectItem value="6">Crowns</SelectItem>
-                    <SelectItem value="7">Root Canal</SelectItem>
-                    <SelectItem value="8">Braces/Invisalign</SelectItem>
-                    <SelectItem value="9">Bonding</SelectItem>
-                    <SelectItem value="10">Dentures</SelectItem>
+                    <SelectItem value="Cleaning">Cleaning</SelectItem>
+                    <SelectItem value="Whitening">Whitening</SelectItem>
+                    <SelectItem value="Extractions">Extractions</SelectItem>
+                    <SelectItem value="Veneers">Veneers</SelectItem>
+                    <SelectItem value="Fillings">Fillings</SelectItem>
+                    <SelectItem value="Crowns">Crowns</SelectItem>
+                    <SelectItem value="Root Canal">Root Canal</SelectItem>
+                    <SelectItem value="Braces/Invisalign">
+                      Braces/Invisalign
+                    </SelectItem>
+                    <SelectItem value="Bonding">Bonding</SelectItem>
+                    <SelectItem value="Dentures">Dentures</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -228,9 +229,10 @@ const BookingForm = () => {
           )}
         />
 
-        <Button type="submit" className="col-span-2">
-          Submit
+        <Button variant={"outline"} type="button" onClick={() => navigate(-1)}>
+          Cancel
         </Button>
+        <Button type="submit">Submit</Button>
       </form>
     </Form>
   );
