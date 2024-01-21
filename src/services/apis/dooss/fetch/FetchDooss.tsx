@@ -13,7 +13,7 @@ export type Booking = {
 
 const FetchDooss = async (
   endpoint: string,
-  method: "GET" | "POST" | "PUT" | "DELETE",
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
   data?: unknown
 ) => {
   const response = await axios({

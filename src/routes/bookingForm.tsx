@@ -27,12 +27,13 @@ import * as z from "zod";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { createBooking } from "@/services/apis/dooss/requests/Booking";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import useUser from "@/store/user";
 
 const bookingSchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
-  email: z.string(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  email: z.string().optional(),
   dentist: z.string(),
   appointmentType: z.string(),
   date: z.date(),
@@ -41,6 +42,9 @@ const bookingSchema = z.object({
 
 const BookingForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useUser();
+
   const form = useForm<z.infer<typeof bookingSchema>>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
@@ -60,7 +64,7 @@ const BookingForm = () => {
   };
 
   const onSubmit = (values: z.infer<typeof bookingSchema>) => {
-    submitBooking(values);
+    submitBooking({ ...values, email: user.email });
   };
   return (
     <Form {...form}>
@@ -68,42 +72,47 @@ const BookingForm = () => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="grid grid-cols-2 gap-2"
       >
-        <FormField
-          control={form.control}
-          name="firstName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>First Name</FormLabel>
-              <FormControl>
-                <Input placeholder="First Name" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="lastName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Last Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Last Name" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem className=" col-span-2">
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="Last Name" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+        {location.pathname === "/book" ? (
+          <>
+            {" "}
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>First Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="First Name" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Last Name" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem className=" col-span-2">
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Last Name" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </>
+        ) : null}
         <FormField
           control={form.control}
           name="dentist"
