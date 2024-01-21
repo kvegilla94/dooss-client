@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { generateOtp, login } from "@/services/apis/dooss/requests/auth";
+import useUser from "@/store/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -32,6 +33,7 @@ const loginSchema = z.object({
 const Home = () => {
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [email, setEmail] = useState("");
+  const { updateUser } = useUser();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -46,12 +48,20 @@ const Home = () => {
 
     if (values.otp) {
       const { success, data } = await login(values);
-      if (success) return navigate("/user");
+      if (success) {
+        updateUser(data.user);
+        return navigate("/user");
+      }
+      console.log(data);
       return form.setError("otp", { message: data.message });
     } else {
       await generateOtp({ email });
       setIsOtpSent(true);
     }
+  };
+
+  const resendOtp = async () => {
+    await generateOtp({ email });
   };
 
   return (
@@ -114,7 +124,11 @@ const Home = () => {
                 />
               )}
               {isOtpSent && (
-                <Button type="submit" variant={"secondary"}>
+                <Button
+                  type="button"
+                  variant={"secondary"}
+                  onClick={() => resendOtp()}
+                >
                   Resend
                 </Button>
               )}
