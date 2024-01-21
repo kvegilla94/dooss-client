@@ -9,6 +9,7 @@ import BookingDetail, {
   loader as bookingLoader,
 } from "./routes/bookingDetails";
 import Root from "./routes/root";
+import BookingForm from "./routes/bookingForm";
 
 const router = createBrowserRouter([
   {
@@ -26,8 +27,12 @@ const router = createBrowserRouter([
         children: [
           {
             path: ":id",
-            loader: bookingLoader,
             element: <BookingDetail />,
+            loader: bookingLoader,
+          },
+          {
+            path: "book",
+            element: <BookingForm />,
           },
         ],
       },
