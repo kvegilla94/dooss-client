@@ -1,13 +1,14 @@
 import axios from "axios";
 
 export type Booking = {
+  id?: number;
   firstName?: string;
   lastName?: string;
   email?: string;
-  dentist: string;
-  appointmentType: string;
-  date: Date;
-  time: string;
+  dentist: string | undefined;
+  appointmentType: string | undefined;
+  date: Date | undefined;
+  time: string | undefined;
 };
 
 const FetchDooss = async (
@@ -18,7 +19,7 @@ const FetchDooss = async (
   const response = await axios({
     url: endpoint,
     method,
-    baseURL: "http://localhost:3000/", // get from config
+    baseURL: "http://localhost:3000/",
     data,
   });
 
